@@ -1,4 +1,7 @@
-package Equipe2_RelatorioANS;
+package Equipe2_Relatorio;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class UsuarioOperador {
 
@@ -29,4 +32,10 @@ public class UsuarioOperador {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
+	
+	public List<UsuarioOperador> ObterUsuarios() throws SQLException, ClassNotFoundException{
+    	ConsultaBancoDados conexao = new ConsultaBancoDados();       
+        return (List<UsuarioOperador>)conexao.ObterUsuarios();            
+	}
+	
 }
