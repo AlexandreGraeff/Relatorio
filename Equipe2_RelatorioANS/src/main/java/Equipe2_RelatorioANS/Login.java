@@ -20,6 +20,8 @@ public class Login extends JFrame {
 	private JLabel etiquetaUsuario;
 	private JLabel etiquetaSenha;
 	private UsuarioOperador user_teste;
+	private LoginDA UserDA;
+	private List<UsuarioOperador> listaUsuarios;
 	public Login(){
 		super("Autenticação");
 		botaoLogin = new JButton("Login");
@@ -44,55 +46,16 @@ public class Login extends JFrame {
 	    getContentPane().add(janelaLogin);
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setVisible(true);
+	    UserDA= new LoginDA();
+	    List<UsuarioOperador> listaUsuarios = new ArrayList<>();
+	    listaUsuarios = LoginDA.getUser();
 	    botaoLogin.addActionListener(new ActionListener() {
-	        public void actionPerformed(ActionEvent e) {
-	        	//BeginScreen window = new BeginScreen(user_teste);
+	        public void actionPerformed(ActionEvent e) 
+	        {
 	        	
-	        	try {
-	                Class.forName("oracle.jdbc.driver.OracleDriver");
-	            } catch (ClassNotFoundException excecao) {
-	                System.out.println("Não encontrou o driver de conexão ao banco");
-	                excecao.printStackTrace();
-	                return;
-	            }
-	            Connection connection = null;
-	            try {
-	                connection = DriverManager.getConnection(
-	                        "jdbc:oracle:thin:@localhost:1521:xe", "system", "abc1234");
-	            } catch (SQLException excecao) {
-	                System.out.println("Falha na conexão");
-	                excecao.printStackTrace();
-	                return;
-	
-	            }
-	
-	            if (connection != null) {
-	                System.out.println("Sucesso na conexão");
-	            } else {
-	                System.out.println("Falha na conexão");
-	                return;
-	            }
-	            
-	            List<UsuarioOperador> listaUsuarios = new ArrayList<>();
-	            String sql = "SELECT ID, NOME, SENHA FROM USUARIO_OPERADOR";	
-	
-	            try {
-		            try(PreparedStatement stm = connection.prepareStatement(sql);
-		                ResultSet retornoConsulta = stm.executeQuery()){
-			            while(retornoConsulta.next()){
-			            	UsuarioOperador usuarioOperador = new UsuarioOperador();
-			            	usuarioOperador.setId(retornoConsulta.getString(1));
-			            	usuarioOperador.setNome(retornoConsulta.getString(2));
-			            	usuarioOperador.setSenha(retornoConsulta.getString(3));
-			            	listaUsuarios.add(usuarioOperador);
-			                }    
-			            }
-		        } catch (SQLException excecao) {
-		            System.out.println("Falha na conexão");
-		            excecao.printStackTrace();
-		            return;	
-		        }
-	            
+
+	         //  
+	        	
 	            Boolean usuarioExistente = false;
 	            Boolean senhaCorreta = false;
 	            UsuarioOperador usuarioLogado = new UsuarioOperador();
