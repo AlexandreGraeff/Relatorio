@@ -79,7 +79,7 @@ public class DiretorioRelatorio extends JFrame {
 	    			String itemSelecionado = comboBoxProgramas.getSelectedItem().toString();
     	    	    Relatorio relatorio = new Relatorio(usuarioLogado);
     	        	try {
-						relatorio.criarRelatorio(diretorioSelecionado, itemSelecionado);
+						relatorio.CriarRelatorio(diretorioSelecionado, itemSelecionado);
 					} catch (ClassNotFoundException | DocumentException | SQLException excecao) {
 						JOptionPane.showMessageDialog(null,"Erro ao gerar relatório");
 						excecao.printStackTrace();

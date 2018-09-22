@@ -27,7 +27,7 @@ public class Relatorio {
 		this.usuarioOperador = usuarioLogado;
 	}
 
-	public void criarRelatorio(String filePath, String nomeProgramaSaude) throws DocumentException, SQLException, ClassNotFoundException {
+	public void CriarRelatorio(String filePath, String nomeProgramaSaude) throws DocumentException, SQLException, ClassNotFoundException {
 		this.programaSaude = new ProgramaSaude();
 		Document documento = new Document(PageSize.A4, 50, 50, 50, 50);		
 		try {			
