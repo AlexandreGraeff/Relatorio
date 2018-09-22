@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -26,9 +27,9 @@ public class DiretorioRelatorio extends JFrame {
 	public void SelecionarDiretorio(final UsuarioOperador usuarioLogado) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				ProgramaSaude reportsDatabase = new ProgramaSaude();
+				ProgramaSaude programasDeSaude = new ProgramaSaude();
 				try {
-					List<String> listaProgramas = reportsDatabase.ObterProgramas();
+					List<String> listaProgramas = programasDeSaude.ObterProgramas();
 					iniciarJanelaSelecao(usuarioLogado, listaProgramas);
 				} catch (SQLException | ClassNotFoundException e) {
 					e.printStackTrace();
@@ -39,26 +40,26 @@ public class DiretorioRelatorio extends JFrame {
 
 	private void iniciarJanelaSelecao(final UsuarioOperador usuarioLogado, List<String> listaProgramasSaude) 
 	{
-		JButton ChooseFolderButton = new JButton("Selecione um diretório");
-		JButton GenerateReportButton = new JButton("Gerar relatório");
-		final JComboBox<Object> ProgramsComboBox = new JComboBox<Object>((Object[])listaProgramasSaude.toArray());
-		JLabel ChooseProgramLabel = new JLabel("Selecione um programa");
-		JPanel GenerateReportWindow = new JPanel();
+		JButton botaoEscolherDiretorio = new JButton("Selecione um diretório");
+		JButton botaoGerarRelatorio = new JButton("Gerar relatório");
+		final JComboBox<Object> comboBoxProgramas = new JComboBox<Object>((Object[])listaProgramasSaude.toArray());
+		JLabel labelSelecionarPrograma = new JLabel("Selecione um programa");
+		JPanel janelaGerarRelatorio = new JPanel();
 	    setSize(300,250);
 	    setLocation(500,280);
-	    GenerateReportWindow.setLayout (null);
-	    ChooseProgramLabel.setBounds(85,80,200,20);
-	    ProgramsComboBox.setBounds(20, 110, 250, 20);
-	    ChooseFolderButton.setBounds(50,40,200,20);
-	    GenerateReportButton.setBounds(75,150,150,20);
-		GenerateReportWindow.add(ChooseFolderButton);
-		GenerateReportWindow.add(ProgramsComboBox);		
-		GenerateReportWindow.add(GenerateReportButton);
-		GenerateReportWindow.add(ChooseProgramLabel);
+	    janelaGerarRelatorio.setLayout (null);
+	    labelSelecionarPrograma.setBounds(85,80,200,20);
+	    comboBoxProgramas.setBounds(20, 110, 250, 20);
+	    botaoEscolherDiretorio.setBounds(50,40,200,20);
+	    botaoGerarRelatorio.setBounds(75,150,150,20);
+	    janelaGerarRelatorio.add(botaoEscolherDiretorio);
+	    janelaGerarRelatorio.add(comboBoxProgramas);		
+		janelaGerarRelatorio.add(botaoGerarRelatorio);
+		janelaGerarRelatorio.add(labelSelecionarPrograma);
 	    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    getContentPane().add(GenerateReportWindow);
+	    getContentPane().add(janelaGerarRelatorio);
 	    setVisible(true);
-	    ChooseFolderButton.addActionListener(new ActionListener() {
+	    botaoEscolherDiretorio.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e)
 	    	{
 	    		JFileChooser openFile = new JFileChooser();
@@ -69,18 +70,29 @@ public class DiretorioRelatorio extends JFrame {
 	    	}	    		    	     	    
 	    });
 	    
-	    GenerateReportButton.addActionListener(new ActionListener() {
+	    botaoGerarRelatorio.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e)
 	    	{	
 	    		if(fullPath != null)
 	    		{
-	    			String SelectedItem = ProgramsComboBox.getSelectedItem().toString();
+	    			String SelectedItem = comboBoxProgramas.getSelectedItem().toString();
 	    	        try {
 	    	    	    Relatorio reportAns = new Relatorio(usuarioLogado);
-	    	        	reportAns.criarRelatorio(fullPath, SelectedItem);
+	    	        	if(reportAns.criarRelatorio(fullPath, SelectedItem) == true)
+	    	        	{
+	    	        		JOptionPane.showMessageDialog(null,"Relatório gerado");
+	    	        	}
+	    	        	else
+	    	        	{
+	    	        		JOptionPane.showMessageDialog(null,"Erro ao gerar relatório");
+	    	        	}
 	    			} catch (DocumentException | SQLException | ClassNotFoundException excecao) {
 	    				excecao.printStackTrace();
 	    			}	
+	    		}
+	    		else
+	    		{
+	    			JOptionPane.showMessageDialog(null,"Selecione um diretório");
 	    		}
 	    	}	    		    	     	    
 	    });

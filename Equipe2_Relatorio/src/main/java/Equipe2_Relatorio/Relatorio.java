@@ -23,7 +23,7 @@ public class Relatorio {
 		this.usuarioOperador = usuarioLogado;
 	}
 
-	public void criarRelatorio(String filePath, String ProgramName) throws DocumentException, SQLException, ClassNotFoundException {
+	public boolean criarRelatorio(String filePath, String ProgramName) throws DocumentException, SQLException, ClassNotFoundException {
 		this.programaSaude = new ProgramaSaude();
 		Document document = new Document(PageSize.A4, 50, 50, 50, 50);		
 		try {
@@ -45,10 +45,13 @@ public class Relatorio {
 			paragraph1.setSpacingBefore(50);
 			document.add(paragraph1);
 			document.close();
+			return true;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			return false;
 		} catch (DocumentException e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 	
