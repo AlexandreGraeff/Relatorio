@@ -7,13 +7,13 @@ public class ProgramaSaude {
 	
 	public List<String> ObterProgramas() throws SQLException, ClassNotFoundException
 	{
-    	ConsultaBancoDados conexao = new ConsultaBancoDados();   
-        return conexao.ObterProgramas();
+    	RelatorioAcessoDados relatorioAcessoDados = new RelatorioAcessoDados();   
+        return relatorioAcessoDados.ObterProgramas();
 	}
 	
 	public int ObterParticipantesProgramas (String nomePrograma) throws SQLException, ClassNotFoundException
 	{
-    	ConsultaBancoDados conexao = new ConsultaBancoDados();
-        return conexao.ObterParticipantesProgramas(nomePrograma);
+    	RelatorioAcessoDados relatorioAcessoDados = new RelatorioAcessoDados();   
+        return relatorioAcessoDados.ObterParticipantesProgramas(nomePrograma);
 	}
 }

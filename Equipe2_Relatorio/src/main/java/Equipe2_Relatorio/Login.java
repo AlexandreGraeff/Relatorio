@@ -81,7 +81,7 @@ public class Login extends JFrame {
 		            	JOptionPane.showMessageDialog(null,"Senha incorreta");
 		            }
 				} catch (SQLException | ClassNotFoundException | NoSuchAlgorithmException | UnsupportedEncodingException excecao) {
-			        System.out.println("Falha na conexão ao banco de dados");
+					JOptionPane.showMessageDialog(null,"Falha na conexão ao banco de dados");
 					excecao.printStackTrace();
 				}
 	        }

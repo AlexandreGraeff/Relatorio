@@ -18,7 +18,7 @@ import java.util.List;
 public class DiretorioRelatorio extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private String fullPath;
+	private String diretorioSelecionado;
 	
 	public DiretorioRelatorio() {
 		super("Gerar Relatórios ANS");
@@ -32,6 +32,7 @@ public class DiretorioRelatorio extends JFrame {
 					List<String> listaProgramas = programasDeSaude.ObterProgramas();
 					iniciarJanelaSelecao(usuarioLogado, listaProgramas);
 				} catch (SQLException | ClassNotFoundException e) {
+					JOptionPane.showMessageDialog(null,"Falha na conexão ao banco de dados");
 					e.printStackTrace();
 				}
 			}
@@ -66,29 +67,23 @@ public class DiretorioRelatorio extends JFrame {
 	    		openFile.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	    		openFile.showOpenDialog(null);		          
 	            File file = openFile.getSelectedFile();
-	            fullPath = file.getAbsolutePath();	            
+	            diretorioSelecionado = file.getAbsolutePath();	            
 	    	}	    		    	     	    
 	    });
 	    
 	    botaoGerarRelatorio.addActionListener(new ActionListener() {
 	    	public void actionPerformed(ActionEvent e)
 	    	{	
-	    		if(fullPath != null)
+	    		if(diretorioSelecionado != null)
 	    		{
-	    			String SelectedItem = comboBoxProgramas.getSelectedItem().toString();
-	    	        try {
-	    	    	    Relatorio reportAns = new Relatorio(usuarioLogado);
-	    	        	if(reportAns.criarRelatorio(fullPath, SelectedItem) == true)
-	    	        	{
-	    	        		JOptionPane.showMessageDialog(null,"Relatório gerado");
-	    	        	}
-	    	        	else
-	    	        	{
-	    	        		JOptionPane.showMessageDialog(null,"Erro ao gerar relatório");
-	    	        	}
-	    			} catch (DocumentException | SQLException | ClassNotFoundException excecao) {
-	    				excecao.printStackTrace();
-	    			}	
+	    			String itemSelecionado = comboBoxProgramas.getSelectedItem().toString();
+    	    	    Relatorio relatorio = new Relatorio(usuarioLogado);
+    	        	try {
+						relatorio.criarRelatorio(diretorioSelecionado, itemSelecionado);
+					} catch (ClassNotFoundException | DocumentException | SQLException excecao) {
+						JOptionPane.showMessageDialog(null,"Erro ao gerar relatório");
+						excecao.printStackTrace();
+					}
 	    		}
 	    		else
 	    		{

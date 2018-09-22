@@ -3,7 +3,11 @@ package Equipe2_Relatorio;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Calendar;
+
+import javax.swing.JOptionPane;
+
 import com.itextpdf.text.Anchor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -23,62 +27,54 @@ public class Relatorio {
 		this.usuarioOperador = usuarioLogado;
 	}
 
-	public boolean criarRelatorio(String filePath, String ProgramName) throws DocumentException, SQLException, ClassNotFoundException {
+	public void criarRelatorio(String filePath, String nomeProgramaSaude) throws DocumentException, SQLException, ClassNotFoundException {
 		this.programaSaude = new ProgramaSaude();
-		Document document = new Document(PageSize.A4, 50, 50, 50, 50);		
-		try {
-			PdfWriter.getInstance(document,	new FileOutputStream( filePath + "\\ReportAns" + Calendar.getInstance().get(Calendar.YEAR) + ".pdf"));
-			document.open();
-			Paragraph paragraph1 = getTitleParagraph(Calendar.getInstance());
-			document.add(paragraph1);
-			document.add(new Paragraph("-----------------------------------------------------------------------------"));
-			paragraph1 = getProgramNameParagraph(ProgramName);
-			document.add(paragraph1);
-			paragraph1 = getQtyByProgram(ProgramName);
-			document.add(paragraph1);
-			document.add(new Paragraph("-----------------------------------------------------------------------------"));
-			Anchor responField = new Anchor("Responsável: ",FontFactory.getFont(FontFactory.TIMES, 14, Font.BOLD, new CMYKColor(255, 255, 255, 255)));
-			Anchor responValue = new Anchor( this.usuarioOperador.getNome(), FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 255)));
-			paragraph1 = new Paragraph();
-			paragraph1.add( responField );
-			paragraph1.add( responValue );
-			paragraph1.setSpacingBefore(50);
-			document.add(paragraph1);
-			document.close();
-			return true;
-		} catch (FileNotFoundException e) {
+		Document documento = new Document(PageSize.A4, 50, 50, 50, 50);		
+		try {			
+			PdfWriter.getInstance(documento, new FileOutputStream( filePath + "\\Relatorio_ANS_" + LocalDateTime.now().toString().replace('-', '_').replace(':', '_') + ".pdf"));
+			documento.open();
+			Paragraph linha = GerarLinhaTitulo(Calendar.getInstance());
+			documento.add(linha);
+			linha = GerarLinhaNomePrograma(nomeProgramaSaude);
+			documento.add(linha);
+			linha = GerarLinhaParticipantes(nomeProgramaSaude);
+			documento.add(linha);
+			Anchor linhaResponsavelEtiqueta = new Anchor("Responsável: ",FontFactory.getFont(FontFactory.TIMES, 14, Font.BOLD, new CMYKColor(255, 255, 255, 255)));
+			Anchor linhaResponsavelNome = new Anchor(this.usuarioOperador.getNome(), FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 255)));
+			linha = new Paragraph();
+			linha.add(linhaResponsavelEtiqueta);
+			linha.add(linhaResponsavelNome);
+			documento.add(linha);
+			documento.close();
+        	JOptionPane.showMessageDialog(null,"Relatório gerado");
+		} catch (FileNotFoundException | ClassNotFoundException e) {
+			JOptionPane.showMessageDialog(null,"Erro ao gerar relatório");
 			e.printStackTrace();
-			return false;
-		} catch (DocumentException e) {
-			e.printStackTrace();
-			return false;
 		}
 	}
 	
-	private Paragraph getProgramNameParagraph(String ProgramName)
+	private Paragraph GerarLinhaNomePrograma(String nomePrograma)
 	{
-		Anchor anchorTarget = new Anchor("Relatório do programa " + ProgramName);
-		Paragraph paragraph = new Paragraph();
-		paragraph.setSpacingBefore(50);
-		paragraph.setSpacingAfter(50);
-		paragraph.setAlignment(Paragraph.ALIGN_CENTER);
-		paragraph.add(anchorTarget);
-		return paragraph;
+		Anchor linhaProgramaEtiqueta = new Anchor("Nome do programa: ", FontFactory.getFont(FontFactory.TIMES, 14, Font.BOLD, new CMYKColor(255, 255, 255, 255)));
+		Anchor linhaProgramaNome = new Anchor(nomePrograma, FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 255)));
+		Paragraph linha = new Paragraph();						
+		linha.add(linhaProgramaEtiqueta);
+		linha.add(linhaProgramaNome);
+		return linha;		
 	}
 	
-	private Paragraph getQtyByProgram(String ProgramName) throws SQLException, ClassNotFoundException
+	private Paragraph GerarLinhaParticipantes(String nomePrograma) throws SQLException, ClassNotFoundException
 	{
-		Anchor qtyPrgField = new Anchor("Quantidade de participantes: ",FontFactory.getFont(FontFactory.TIMES, 14, Font.BOLD, new CMYKColor(255, 255, 255, 255)));
-		Anchor qtyPrgValue = new Anchor(new Integer(this.programaSaude.ObterParticipantesProgramas(ProgramName) ).toString(),FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 255)));
-		Paragraph paragraph1 = new Paragraph();						
-		paragraph1.add( qtyPrgField );
-		paragraph1.add( qtyPrgValue );
-		return paragraph1;
+		Anchor linhaParticipantesEtiqueta = new Anchor("Quantidade de participantes: ", FontFactory.getFont(FontFactory.TIMES, 14, Font.BOLD, new CMYKColor(255, 255, 255, 255)));
+		Anchor linhaParticipantesQuantidade = new Anchor(new Integer(this.programaSaude.ObterParticipantesProgramas(nomePrograma) ).toString(),FontFactory.getFont(FontFactory.TIMES, 14, Font.NORMAL, new CMYKColor(255, 255, 255, 255)));
+		Paragraph linha = new Paragraph();						
+		linha.add(linhaParticipantesEtiqueta);
+		linha.add(linhaParticipantesQuantidade);
+		return linha;
 	}	
 	
-	private Paragraph getTitleParagraph(Calendar calendar) {
+	private Paragraph GerarLinhaTitulo(Calendar calendar) {
 		Anchor anchorTarget = new Anchor("Relatório ANS " + calendar.get(Calendar.YEAR));
-
 		Paragraph paragraph = new Paragraph();
 		paragraph.setSpacingBefore(50);
 		paragraph.setSpacingAfter(50);

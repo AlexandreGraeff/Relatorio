@@ -34,8 +34,8 @@ public class UsuarioOperador {
 	}
 	
 	public List<UsuarioOperador> ObterUsuarios() throws SQLException, ClassNotFoundException{
-    	ConsultaBancoDados conexao = new ConsultaBancoDados();       
-        return (List<UsuarioOperador>)conexao.ObterUsuarios();            
+    	UsuarioOperadorAcessoDados usuarioOperadorAcessoDados = new UsuarioOperadorAcessoDados();       
+        return (List<UsuarioOperador>)usuarioOperadorAcessoDados.ObterUsuarios();            
 	}
 	
 }
